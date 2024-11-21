@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Hotel Management System</title>
+    <style>
+        /* Basic styles for layout */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('hotel.jpg');
+            background-size: cover;
+            background: linear-gradient(to right, #e2e2e2, #ffffff);
+            color: #333;
+        }
+
+        nav {
+            background: #007bff;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        nav:hover {
+            background: #0056b3;
+            transform: translateY(-5px);
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin: 0;
+        }
+
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+
+        #content {
+            padding: 80px 20px 20px; /* Adjusted for fixed nav */
+            min-height: 400px;
+            background: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 1200px;
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+        }
+
+        #content.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #content.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #007bff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            font-size: 2em;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        form input, form select, form textarea {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        form input:focus, form select:focus, form textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            outline: none;
+        }
+
+        form input[type="submit"], form button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 12px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        form input[type="submit"]:hover, form button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        form label {
+            margin-top: 10px;
+            display: block;
+            font-weight: bold;
+        }
+
+        #logout {
+            margin-left: auto;
+            color: #ffffff;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        #logout:hover {
+            color: #ff7f7f;
+        }
+
+        /* Admin section styles */
+        .admin-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .admin-section:hover {
+            background-color: #e9ecef;
+            transform: scale(1.02);
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            max-width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            transition: background-color 0.3s;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+            transition: background-color 0.3s;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #007bff;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        footer:hover {
+            background-color: #0056b3;
+            transform: translateY(-5px);
+        }
+
+        /* Hide elements */
+        .hidden {
+            display: none;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Payment section styles */
+        .payment-section {
+            display: none;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .payment-section input[type="text"], .payment-section input[type="number"], .payment-section input[type="submit"] {
+            margin: 10px 0;
+        }
+
+        .payment-section input[type="submit"] {
+            background-color: #28a745;
+            transition: background-color 0.3s;
+        }
+
+        .payment-section input[type="submit"]:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <ul id="navMenu">
+            <li><a href="#" onclick="loadPage('home')">Home</a></li>
+            <li><a href="#" onclick="loadPage('about')">About Us</a></li>
+            <li><a href="#" onclick="loadPage('rooms')">Rooms</a></li>
+            <li><a href="#" onclick="loadPage('booking')">Booking</a></li>
+            <li><a href="#" onclick="loadPage('contact')">Contact Us</a></li>
+            <li id="adminLink" class="hidden"><a href="#" onclick="loadPage('admin')">Admin Panel</a></li>
+            <li id="userLink"><a href="#" onclick="loadPage('login')">Login/Register</a></li>
+            <li id="logout" class="hidden" onclick="logout()">Logout</li>
+        </ul>
+    </nav>
+
+    <!-- Content Section -->
+    <div id="content">
+        <!-- Default content will be loaded here -->
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; SPARK Hotel Management System. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Simulated data storage
+        let users = []; // Array to store user profiles
+        let bookings = []; // Array to store bookings
+        let currentUser = null;
+        let isAdmin = false;
+
+        // Function to dynamically load content
+        function loadPage(page) {
+            var content = document.getElementById('content');
+
+            // Authentication checks
+            if ((page === 'booking' || page === 'profile' || page === 'history') && !currentUser) {
+                alert('Please login or register first.');
+                loadPage('login');
+                return;
+            }
+
+            if (page === 'home') {
+                content.innerHTML = `
+                    <h2>Welcome to SPARK Hotel</h2>
+                    <p>Your comfort is our priority. Explore our offerings and book your stay with us!</p>
+                    <p>Experience luxury and comfort like never before. Our hotel offers a variety of rooms and amenities tailored to meet your needs.</p>
+                    <p>Enjoy our state-of-the-art facilities, including a swimming pool, spa, fitness center, and gourmet dining options. Whether you're here for business or leisure, we have something for everyone.</p>
+                    <p>Book your stay with us today and create unforgettable memories!</p>`;
+            } else if (page === 'about') {
+                content.innerHTML = `
+                    <h2>About Us</h2>
+                    <p>Our hotel has been offering exceptional service since 1990. We are committed to providing our guests with the best hospitality experience. Our staff is dedicated to ensuring your stay is comfortable and memorable.</p>
+                    <p>SPARK Hotel is dedicated to providing exceptional service and hospitality. Established in 2005, our hotel has become a favorite destination for travelers from around the world.</p>
+                    <p>Our mission is to deliver an unparalleled guest experience through personalized service, luxurious accommodations, and a commitment to excellence. We pride ourselves on our attention to detail and our dedication to making every guest feel special.</p>
+                    <p>Our team of professionals is here to ensure your stay is comfortable and memorable. Thank you for choosing SPARK Hotel!</p>`;
+            } else if (page === 'rooms') {
+                content.innerHTML = `
+                    <h2>Rooms</h2>
+                    <p>We offer a variety of room options to suit your needs. From luxurious suites to cozy standard rooms, each is equipped with modern amenities to ensure a comfortable stay. Check out our room options and book the one that best fits your needs.</p>
+                    <p>We offer a range of room options to suit your needs and preferences:</p>
+                        <ul>
+                            <li><strong>Standard Room:</strong> Comfortable and well-equipped with modern amenities.</li>
+                            <li><strong>Deluxe Room:</strong> Spacious with added luxury and premium features.</li>
+                            <li><strong>Suite:</strong> Elegant and expensive, perfect for a special occasion or extended stay.</li>
+                        </ul>
+                        <table>
+                            <tr><th>Room Type</th><th>Description</th><th>Price per Night</th></tr>
+                             <tr><td>Standard Room</td><td>Comfortable room with city view.</td><td>$120</td></tr>
+                            <tr><td>Deluxe Room</td><td>Luxurious room with sea view.</td><td>$200</td></tr>
+                            <tr><td>Suite</td><td>Elegant and expensive, perfect for a special occasion or extended stay.</td><td>$500</td></tr>
+                        </table>
+                        <p>Each room is designed to provide a relaxing and enjoyable stay. For more details on room rates and availability, please visit our booking page.</p>`;
+            } else if (page === 'booking') {
+                content.innerHTML = `
+                    <h2>Book Your Stay</h2>
+                    <form onsubmit="submitBooking(event)">
+                        <label for="name">Full Name:</label>
+                        <input type="text" id="name" name="name" required>
+                        
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                        
+                        <label for="phone">Phone Number:</label>
+                        <input type="tel" id="phone" name="phone" required>
+                        
+                        <label for="checkin">Check-in Date:</label>
+                        <input type="date" id="checkin" name="checkin" required>
+                        
+                        <label for="checkout">Check-out Date:</label>
+                        <input type="date" id="checkout" name="checkout" required>
+                        
+                        <label for="roomType">Room Type:</label>
+                        <select id="roomType" name="roomType" required>
+                            <option value="Standard">Standard</option>
+                            <option value="Deluxe">Deluxe</option>
+                            <option value="suite">Suite</option>
+                        </select>
+                        
+                        <div class="payment-section" id="paymentSection">
+                            <h3>Payment Details</h3>
+                            <label for="cardNumber">Card Number:</label>
+                            <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9876 5432" required>
+                            
+                            <label for="expiryDate">Expiry Date:</label>
+                            <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+                            
+                            <label for="cvv">CVV:</label>
+                            <input type="number" id="cvv" name="cvv" placeholder="123" required>
+                            
+                            <input type="submit" value="Submit Booking">
+                        </div>
+                    </form>`;
+                document.getElementById('checkin').addEventListener('change', togglePaymentSection);
+                document.getElementById('checkout').addEventListener('change', togglePaymentSection);
+            } else if (page === 'contact') {
+                content.innerHTML = `
+                    <h2>Contact Us</h2>
+                    <p>Feel free to reach out to us for any inquiries or assistance. We are here to help you 24/7.</p>
+                    <p><strong>Email:</strong> contact@sparkhotel.com</p>
+                    <p><strong>Phone:</strong> +123-456-7890</p>
+                    <p><strong>Address:</strong> 123 Hotel Street, New York City, USA</p>`;
+            } else if (page === 'login') {
+                content.innerHTML = `
+                    <h2>Login / Register</h2>
+                    <form onsubmit="handleLogin(event)">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+                        
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                        
+                        <input type="submit" value="Login">
+                    </form>
+                    <p>Don't have an account? <a href="#" onclick="loadPage('register')">Register here</a>.</p>`;
+            } else if (page === 'register') {
+                content.innerHTML = `
+                    <h2>Register</h2>
+                    <form onsubmit="handleRegister(event)">
+                        <label for="newUsername">Username:</label>
+                        <input type="text" id="newUsername" name="newUsername" required>
+                        
+                        <label for="newPassword">Password:</label>
+                        <input type="password" id="newPassword" name="newPassword" required>
+                        
+                        <input type="submit" value="Register">
+                    </form>`;
+            } else if (page === 'admin') {
+                content.innerHTML = `
+                    <h2>Admin Panel</h2>
+                    <div class="admin-section">
+                        <h3>Modify Bookings</h3>
+                        <p>Here you can view and modify bookings.</p>
+                        <!-- Modify bookings functionality -->
+                    </div>
+                    <div class="admin-section">
+                        <h3>Cancel Bookings</h3>
+                        <p>Here you can view and cancel bookings.</p>
+                        <!-- Cancel bookings functionality -->
+                    </div>`;
+            } else if (page === 'history') {
+                content.innerHTML = `
+                    <h2>Booking History</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Room Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${bookings.map(booking => `
+                            <tr>
+                                <td>${booking.id}</td>
+                                <td>${booking.name}</td>
+                                <td>${booking.email}</td>
+                                <td>${booking.phone}</td>
+                                <td>${booking.checkin}</td>
+                                <td>${booking.checkout}</td>
+                                <td>${booking.roomType}</td>
+                                <td>
+                                    <button onclick="modifyBooking(${booking.id})">Modify</button>
+                                    <button onclick="cancelBooking(${booking.id})">Cancel</button>
+                                </td>
+                            </tr>`).join('')}
+                        </tbody>
+                    </table>`;
+            } else {
+                content.innerHTML = `<h2>Page not found</h2><p>The page you are looking for does not exist.</p>`;
+            }
+
+            // Apply fade-in effect
+            content.classList.remove('fade-in');
+            setTimeout(() => content.classList.add('fade-in'), 100);
+        }
+
+        // Function to toggle payment section visibility
+        function togglePaymentSection() {
+            let checkinDate = document.getElementById('checkin').value;
+            let checkoutDate = document.getElementById('checkout').value;
+            let paymentSection = document.getElementById('paymentSection');
+            if (checkinDate && checkoutDate) {
+                paymentSection.style.display = 'block';
+            } else {
+                paymentSection.style.display = 'none';
+            }
+        }
+
+        // Function to handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            let username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+            
+            // Simple authentication
+            let user = users.find(user => user.username === username && user.password === password);
+            if (user) {
+                currentUser = user;
+                isAdmin = user.isAdmin || false;
+                document.getElementById('userLink').classList.add('hidden');
+                document.getElementById('logout').classList.remove('hidden');
+                document.getElementById('adminLink').classList.toggle('hidden', !isAdmin);
+                loadPage('home');
+            } else {
+                alert('Invalid username or password');
+            }
+        }
+
+        // Function to handle registration
+        function handleRegister(event) {
+            event.preventDefault();
+            let username = document.getElementById('newUsername').value;
+            let password = document.getElementById('newPassword').value;
+
+            // Check if user already exists
+            if (users.some(user => user.username === username)) {
+                alert('Username already exists');
+            } else {
+                let newUser = { username, password, isAdmin: false };
+                users.push(newUser);
+                alert('Registration successful');
+                loadPage('login');
+            }
+        }
+
+        // Function to submit booking
+        function submitBooking(event) {
+            event.preventDefault();
+            let booking = {
+                id: bookings.length + 1,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                checkin: document.getElementById('checkin').value,
+                checkout: document.getElementById('checkout').value,
+                roomType: document.getElementById('roomType').value,
+                payment: {
+                    cardNumber: document.getElementById('cardNumber').value,
+                    expiryDate: document.getElementById('expiryDate').value,
+                    cvv: document.getElementById('cvv').value
+                }
+            };
+            bookings.push(booking);
+            alert('Booking successful');
+            loadPage('history');
+        }
+
+        // Function to modify booking
+        function modifyBooking(id) {
+            let booking = bookings.find(b => b.id === id);
+            if (booking) {
+                let newRoomType = prompt('Enter new room type (single/double/suite):', booking.roomType);
+                if (newRoomType) {
+                    booking.roomType = newRoomType;
+                    alert('Booking modified successfully');
+                    loadPage('history');
+                }
+            } else {
+                alert('Booking not found');
+            }
+        }
+
+        // Function to cancel booking
+        function cancelBooking(id) {
+            bookings = bookings.filter(b => b.id !== id);
+            alert('Booking cancelled successfully');
+            loadPage('history');
+        }
+        function loadBookingHistory() {
+            const history = document.getElementById('bookingHistory');
+            history.innerHTML = bookings.map(b => `
+                <tr>
+                    <td>${b.id}</td>
+                    <td>${b.name}</td>
+                    <td>${b.roomType}</td>
+                    <td>${b.checkIn}</td>
+                    <td>${b.checkOut}</td>
+                    <td><button onclick="modifyBooking(${b.id})">Modify</button> <button onclick="cancelBooking(${b.id})">Cancel</button></td>
+                </tr>
+            `).join('');
+        }
+
+        // Function to handle logout
+        function logout() {
+            currentUser = null;
+            isAdmin = false;
+            document.getElementById('userLink').classList.remove('hidden');
+            document.getElementById('logout').classList.add('hidden');
+            document.getElementById('adminLink').classList.add('hidden');
+            loadPage('home');
+        }
+
+        // Initialize default page
+        loadPage('home');
+    </script>
+</body>
+</html>
